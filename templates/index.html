@@ -15,35 +15,36 @@
 
 <h2>VTE Risk Prediction</h2>
 
-<form action="/predict" method="post">
+<form id="vteForm" action="/predict" method="post">
 
     {% for f in features %}
-        <label>{{ f }}</label>
-
-        {# 前 5 个变量为 0/1 下拉菜单 #}
         {% if loop.index <= 5 %}
+            <label>{{ f }}</label>
             <select name="{{ f }}" required>
                 <option value="0">0 (No)</option>
                 <option value="1">1 (Yes)</option>
             </select>
 
-        {# 最后一个变量 Khorana 0–6 下拉 #}
+        {% elif loop.index == 6 %}
+            <label>{{ f }} (U/L)</label>
+            <input type="number" step="0.0001" name="{{ f }}" required>
+
+        {% elif loop.index == 7 %}
+            <label>{{ f }} (g/L)</label>
+            <input type="number" step="0.0001" name="{{ f }}" required>
+
         {% elif loop.last %}
+            <label>{{ f }} (0–6)</label>
             <select name="{{ f }}" required>
                 {% for i in range(0, 7) %}
                     <option value="{{ i }}">{{ i }}</option>
                 {% endfor %}
             </select>
 
-        {# 中间 AST / Hb 为数字输入 #}
-        {% else %}
-            <input type="number" step="0.0001" name="{{ f }}" required>
         {% endif %}
-
     {% endfor %}
 
     <button type="submit">Risk Prediction</button>
-
 </form>
 
 {% if result is defined %}
@@ -51,6 +52,33 @@
         <h3>Prediction: VTE Risk = {{ result }}</h3>
     </div>
 {% endif %}
+
+<script>
+// ------- 自动保存表单到 localStorage -------
+const form = document.getElementById("vteForm");
+
+// 保存所有字段
+form.addEventListener("input", () => {
+    const data = {};
+    for (const el of form.elements) {
+        if (el.name) data[el.name] = el.value;
+    }
+    localStorage.setItem("vteFormData", JSON.stringify(data));
+});
+
+// 页面载入时自动恢复数据
+window.addEventListener("load", () => {
+    const saved = localStorage.getItem("vteFormData");
+    if (saved) {
+        const data = JSON.parse(saved);
+        for (const el of form.elements) {
+            if (el.name && data[el.name] !== undefined) {
+                el.value = data[el.name];
+            }
+        }
+    }
+});
+</script>
 
 </body>
 </html>
