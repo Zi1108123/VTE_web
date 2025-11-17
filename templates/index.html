@@ -6,8 +6,8 @@
     <style>
         body { font-family: Arial; margin: 40px; max-width: 600px; }
         input, select { width: 100%; padding: 6px; margin-bottom: 14px; }
-        button { padding: 10px 20px; font-size: 16px; }
-        label { font-weight: bold; display: block; margin-bottom: 4px; }
+        button { padding: 10px 20px; font-size: 16px; width: 100%; }
+        label { font-weight: bold; display: block; margin-top: 10px; }
         .result { background: #eef; padding: 15px; border-radius: 5px; margin-top: 20px; }
     </style>
 </head>
@@ -18,17 +18,16 @@
 <form action="/predict" method="post">
 
     {% for f in features %}
-
         <label>{{ f }}</label>
 
-        {# --- 前 5 个变量：Liver cancer, drinking, diabetes, CV event, smoking --- #}
+        {# 前 5 个变量为 0/1 下拉菜单 #}
         {% if loop.index <= 5 %}
             <select name="{{ f }}" required>
                 <option value="0">0 (No)</option>
                 <option value="1">1 (Yes)</option>
             </select>
 
-        {# --- 最后一个变量 Khorana：0–6 下拉框 --- #}
+        {# 最后一个变量 Khorana 0–6 下拉 #}
         {% elif loop.last %}
             <select name="{{ f }}" required>
                 {% for i in range(0, 7) %}
@@ -36,11 +35,22 @@
                 {% endfor %}
             </select>
 
-        {# --- 中间变量（如 AST、Hb）：保持输入框 --- #}
+        {# 中间 AST / Hb 为数字输入 #}
         {% else %}
             <input type="number" step="0.0001" name="{{ f }}" required>
         {% endif %}
 
     {% endfor %}
 
-    <but
+    <button type="submit">Risk Prediction</button>
+
+</form>
+
+{% if result is defined %}
+    <div class="result">
+        <h3>Prediction: VTE Risk = {{ result }}</h3>
+    </div>
+{% endif %}
+
+</body>
+</html>
