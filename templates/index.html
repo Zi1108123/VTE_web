@@ -21,14 +21,14 @@
 
         <label>{{ f }}</label>
 
-        {# --- 前四个变量：下拉 0/1 --- #}
-        {% if loop.index <= 4 %}
+        {# --- 前 5 个变量：Liver cancer, drinking, diabetes, CV event, smoking --- #}
+        {% if loop.index <= 5 %}
             <select name="{{ f }}" required>
                 <option value="0">0 (No)</option>
                 <option value="1">1 (Yes)</option>
             </select>
 
-        {# --- Khorana（最后一个变量）：0-6 --- #}
+        {# --- 最后一个变量 Khorana：0–6 下拉框 --- #}
         {% elif loop.last %}
             <select name="{{ f }}" required>
                 {% for i in range(0, 7) %}
@@ -36,21 +36,11 @@
                 {% endfor %}
             </select>
 
-        {# --- 中间变量：数值输入 --- #}
+        {# --- 中间变量（如 AST、Hb）：保持输入框 --- #}
         {% else %}
             <input type="number" step="0.0001" name="{{ f }}" required>
         {% endif %}
 
     {% endfor %}
 
-    <button type="submit">Risk Prediction</button>
-</form>
-
-{% if result is defined %}
-    <div class="result">
-        <h3>Prediction: VTE Risk = {{ result }}</h3>
-    </div>
-{% endif %}
-
-</body>
-</html>
+    <but
