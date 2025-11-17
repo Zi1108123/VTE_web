@@ -1,6 +1,8 @@
 fastapi
 uvicorn
-jinja2
 numpy
-scikit-learn
-xgboost
+pickle-mixin
+python-multipart
+jinja2
+scikit-learn   # 如果你的模型是 sklearn
+xgboost        # 如果你的模型是 xgboost
